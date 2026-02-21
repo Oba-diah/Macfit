@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BundleController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\EquipmentController;
@@ -11,9 +12,12 @@ use App\Http\Controllers\SubscriptionController;
 use App\Models\Bundle;
 use App\Models\Category;
 
-// Route::get('/user', function (Request $request) {
-//     return $request->user();
-// })->middleware('auth:sanctum');
+Route::post('/register', [AuthController::class,'register']);
+Route::post('/login', [AuthController::class,'login']);
+
+Route::middleware('auth:sanctum')-> group(function () 
+{
+Route::post('/logout', [AuthController::class,'logout']);
 
 route::post('/saveRole',[RoleController::class,'createRole']);
 route::get('/getRoles',[RoleController::class,'readAllRoles']);
@@ -51,3 +55,4 @@ route::get('/getEquipment/id',[EquipmentController::class,'readEquipment']);
 route::post('/updateEquipment/id',[EquipmentController::class,'updateEquipment']);
 route::delete('/deleteEquipment/id',[EquipmentController::class,'deleteEquipment']);
 
+});
