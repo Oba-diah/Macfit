@@ -13,7 +13,7 @@ class RoleController extends Controller
             'name' => 'required|string:roles,name',
             'description' =>'nullable|string|max:1000',
         ]);
-        $role=new Role();
+        $role = new Role(); 
         $role->name = $validated['name'];
         $role->description = $validated['description'];
         try {

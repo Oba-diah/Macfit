@@ -18,8 +18,14 @@ class AuthController extends Controller
             'password' => 'required|string|min:4|max:15|confirmed',
             'user_image'=>'nullable|image|mimes:jpeg,png,jpg,gif|max'
         ]);
+        if ($request->role_id) {
+            $role_id =$request->role_id;
+        }else{
         $role = Role::where('name','user')->first();
-
+        $role_id = $role->id;
+        }
+        $role = Role::where('name','user')->first();
+        
         $user = new User();
         $user->name = $validated['name'];
         $user->email = $validated['email'];
@@ -76,3 +82,4 @@ class AuthController extends Controller
 
     }
 }
+    

@@ -50,10 +50,10 @@ class User extends Authenticatable
         ];
         public function role(){
             return [
-                'Admin'=> $this->role==1,
-                'Secretary'=>$this->role==1,
-                'User'=>$this->role==1,
-                'staff'=>$this->role==1,
+                'Admin'=> $this->role===1,
+                'Secretary'=>$this->role===2,
+                'User'=>$this->role===3,
+                'staff'=>$this->role===4,
              ];
         }
  }
