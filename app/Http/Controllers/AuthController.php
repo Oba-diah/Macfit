@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Role;
 use App\Models\User;
+use App\Models\UserOtp;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
@@ -16,7 +17,9 @@ class AuthController extends Controller
             'name' => 'required|string|max:40',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:4|max:15|confirmed',
-            'user_image'=>'nullable|image|mimes:jpeg,png,jpg,gif|max'
+            'user_image'=>'nullable|image|mimes:jpeg,png,jpg,gif|max',
+            'is_active'=>'nullable|boolean',
+            'role_id'=>'required|integer|exists:roles,id',
         ]);
         if ($request->role_id) {
             $role_id =$request->role_id;
@@ -29,7 +32,7 @@ class AuthController extends Controller
         $user = new User();
         $user->name = $validated['name'];
         $user->email = $validated['email'];
-        $user->role_id = $role->id;
+        $user->role_id = $validated['role_id'];
         $user->password = Hash::make($validated['password']);
 
         if ($request->hasFile('user_image')) {
@@ -79,7 +82,15 @@ class AuthController extends Controller
         return response()->json([
             'message' => 'Logout successfully'
         ]);
+$otp = rand(100000, 999999);
+    $expiresAt = now()->addMinutes(5);
 
+    UserOtp::updateOrCreate([
+        'user_id'=>$user->id,
+        'otp'=>$otp,
+        'expires_at'=>$expiresAt
+    ]);
+    
     }
 }
     

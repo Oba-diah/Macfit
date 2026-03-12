@@ -9,14 +9,31 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SubscriptionController;
+use App\Http\Controllers\VerifyEmailController;
+use App\Http\Controllers\ResendEmailVerificationController;
+use App\Http\Controllers\UserOtpController;
+
 use App\Models\Bundle;
 use App\Models\Category;
 
+    // public routes
 Route::post('/register', [AuthController::class,'register']);
 Route::post('/login', [AuthController::class,'login']);
+Route::post('/verify-otp', [UserOtpController::class, 'verifyOtp']);
 
+
+            // Email Verification
+Route::get('/email/verify/{id}/{hash}', [VerifyEmailController::class, 'verify'])
+        ->name('verification.verify')
+        ->middleware(['signed', 'throttle:6,1']);
+Route::post('/email/verify/{id}/{hash}', [verifyemailcontroller::class, 'resend'])
+        ->middleware(['signed', 'throttle:6,1']);
+
+        // protected routes
 Route::middleware('auth:sanctum')-> group(function () 
 {
+Route::get('/userInfo', [Authcontroller::class, 'userInfo']);
+
 Route::post('/logout', [AuthController::class,'logout']);
 
 route::post('/saveRole',[RoleController::class,'createRole']);

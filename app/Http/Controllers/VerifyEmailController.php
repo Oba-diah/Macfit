@@ -26,7 +26,7 @@ class VerifyEmailController extends Controller
 
         $user->is_active = 1;
         $user->save();
-        return response()->json("Email Verified Successfully");
+        return response()->json(['message'=>"Email Verified Successfully"],200);
         
     }
 }

@@ -49,6 +49,9 @@ class User extends Authenticatable
             'is_active'=>'boolean',
         ];
         public function role(){
+            return $this->belongsTo(Role::class);
+        }
+        public function abilities(){
             return [
                 'Admin'=> $this->role===1,
                 'Secretary'=>$this->role===2,
