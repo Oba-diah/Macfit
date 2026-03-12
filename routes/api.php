@@ -4,8 +4,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BundleController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\EquipmentController;
-use App\Http\Controllers\gymController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\GymController;
+use Illuminate\Http\Request; 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SubscriptionController;
@@ -19,18 +19,32 @@ Route::post('/register', [AuthController::class,'register']);
 Route::post('/login', [AuthController::class,'login']);
 Route::post('/verify-otp', [UserOtpController::class, 'verifyOtp']);
 
+Route::get('/getRoles', [RoleController::class, 'readAllRoles']);
+
 
             // Email Verification
 Route::get('/email/verify/{id}/{hash}', [VerifyEmailController::class, 'verify'])
         ->name('verification.verify')
         ->middleware(['signed', 'throttle:6,1']);
-Route::post('/email/verify/{id}/{hash}', [Verifyemailcontroller::class, 'resend'])
+Route::post('/email/verify/{id}/{hash}', [VerifyEmailcontroller::class, 'resend'])
         ->middleware(['signed', 'throttle:6,1']);
+
+Route::post('/email/resend', [ResendEmailVerificationController::class, 'resend'])
+    ->middleware('throttle:6,1');
+
+Route::post('/register', function (Request $request) {
+    $data = $request->validate([
+        'name' => 'required|string',
+        'email' => 'required|email|unique:users,email',
+    ]);
+
+    return response()->json($data);
+});
 
         // protected routes
 Route::middleware('auth:sanctum')-> group(function () 
 {
-Route::get('/userInfo', [Authcontroller::class, 'userInfo']);
+Route::get('/userInfo', [AuthController::class, 'userInfo']);
 
 Route::post('/logout', [AuthController::class,'logout']);
 
@@ -69,5 +83,7 @@ route::get('/getEquipment',[EquipmentController::class,'readAllEquipments']);
 route::get('/getEquipment/{id}',[EquipmentController::class,'readEquipment']);
 route::post('/updateEquipment/{id}',[EquipmentController::class,'updateEquipment']);
 route::delete('/deleteEquipment/{id}',[EquipmentController::class,'deleteEquipment']);
+
+Route::get('/userCharges', [SubscriptionController::class, 'getUserCharges']);
 
 });

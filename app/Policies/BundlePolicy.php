@@ -13,7 +13,7 @@ class BundlePolicy
      */
     public function viewAny(User $user): bool
     {
-        return true;
+        return false;
     }
 
     /**
@@ -21,7 +21,7 @@ class BundlePolicy
      */
     public function view(User $user, Bundle $bundle): bool
     {
-        return true;
+        return false;
     }
 
     /**
@@ -36,6 +36,30 @@ class BundlePolicy
      * Determine whether the user can update the model.
      */
     public function update(User $user, Bundle $bundle): bool
+    {
+        return false;
+    }
+
+    /**
+     * Determine whether the user can delete the model.
+     */
+    public function delete(User $user, Bundle $bundle): bool
+    {
+        return false;
+    }
+
+    /**
+     * Determine whether the user can restore the model.
+     */
+    public function restore(User $user, Bundle $bundle): bool
+    {
+        return false;
+    }
+
+    /**
+     * Determine whether the user can permanently delete the model.
+     */
+    public function forceDelete(User $user, Bundle $bundle): bool
     {
         return false;
     }
