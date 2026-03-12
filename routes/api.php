@@ -13,8 +13,6 @@ use App\Http\Controllers\VerifyEmailController;
 use App\Http\Controllers\ResendEmailVerificationController;
 use App\Http\Controllers\UserOtpController;
 
-use App\Models\Bundle;
-use App\Models\Category;
 
     // public routes
 Route::post('/register', [AuthController::class,'register']);
@@ -26,7 +24,7 @@ Route::post('/verify-otp', [UserOtpController::class, 'verifyOtp']);
 Route::get('/email/verify/{id}/{hash}', [VerifyEmailController::class, 'verify'])
         ->name('verification.verify')
         ->middleware(['signed', 'throttle:6,1']);
-Route::post('/email/verify/{id}/{hash}', [verifyemailcontroller::class, 'resend'])
+Route::post('/email/verify/{id}/{hash}', [Verifyemailcontroller::class, 'resend'])
         ->middleware(['signed', 'throttle:6,1']);
 
         // protected routes
@@ -38,38 +36,38 @@ Route::post('/logout', [AuthController::class,'logout']);
 
 route::post('/saveRole',[RoleController::class,'createRole']);
 route::get('/getRoles',[RoleController::class,'readAllRoles']);
-route::get('/getRoles/id',[RoleController::class,'readRole']);
-route::post('/updateRole/id',[RoleController::class,'updateRole']);
-route::delete('/deleteRole/id',[RoleController::class,'deleteRole']);
+route::get('/getRoles/{id}',[RoleController::class,'readRole']);
+route::post('/updateRole/{id}',[RoleController::class,'updateRole']);
+route::delete('/deleteRole/{id}',[RoleController::class,'deleteRole']);
 
-route::post('/saveCategory',[CategoryController::class,'createRole']);
-route::get('/getCategory',[CategoryController::class,'readAllRoles']);
-route::get('/getCategory/id',[CategoryController::class,'readRole']);
-route::post('/updateCategory/id',[CategoryController::class,'updateRole']);
-route::delete('/deleteCategory/id',[CategoryController::class,'deleteRole']);
+route::post('/saveCategory',[CategoryController::class,'createCategory']);
+route::get('/getCategory',[CategoryController::class,'readAllCategories']);
+route::get('/getCategory/{id}',[CategoryController::class,'readCategory']);
+route::post('/updateCategory/{id}',[CategoryController::class,'updateCategory']);
+route::delete('/deleteCategory/{id}',[CategoryController::class,'deleteCategory']);
 
 route::post('/saveGym',[GymController::class,'createGym']);
 route::get('/getGyms',[GymController::class,'readAllGyms']);
-route::get('/getGym/id',[GymController::class,'readGym']);
-route::post('/updateGym/id',[GymController::class,'updateGym']);
-route::delete('/deleteGym/id',[GymController::class,'deleteGym']);
+route::get('/getGym/{id}',[GymController::class,'readGym']);
+route::post('/updateGym/{id}',[GymController::class,'updateGym']);
+route::delete('/deleteGym/{id}',[GymController::class,'deleteGym']);
 
 route::post('/saveBundle',[BundleController::class,'createBundle']);
 route::get('/getBundles',[BundleController::class,'readAllBundles']);
-route::get('/getBundle/id',[BundleController::class,'readBundle']);
-route::post('/updateBundle/id',[BundleController::class,'updateBundle']);
-route::delete('/deleteBundle/id',[BundleController::class,'deleteBundle']);
+route::get('/getBundle/{id}',[BundleController::class,'readBundle']);
+route::post('/updateBundle/{id}',[BundleController::class,'updateBundle']);
+route::delete('/deleteBundle/{id}',[BundleController::class,'deleteBundle']);
 
 route::post('/saveSubscription',[SubscriptionController::class,'createSubscription']);
 route::get('/getSubscription',[SubscriptionController::class,'readAllSubscriptions']);
-route::get('/getSubscription/id',[SubscriptionController::class,'readSubscription']);
-route::post('/updateSubscription/id',[SubscriptionController::class,'updateSubscription']);
-route::delete('/deleteSubscription/id',[SubscriptionController::class,'deleteSubscription']);
+route::get('/getSubscription/{id}',[SubscriptionController::class,'readSubscription']);
+route::post('/updateSubscription/{id}',[SubscriptionController::class,'updateSubscription']);
+route::delete('/deleteSubscription/{id}',[SubscriptionController::class,'deleteSubscription']);
 
 route::post('/saveEquipment',[EquipmentController::class,'createEquipment']);
 route::get('/getEquipment',[EquipmentController::class,'readAllEquipments']);
-route::get('/getEquipment/id',[EquipmentController::class,'readEquipment']);
-route::post('/updateEquipment/id',[EquipmentController::class,'updateEquipment']);
-route::delete('/deleteEquipment/id',[EquipmentController::class,'deleteEquipment']);
+route::get('/getEquipment/{id}',[EquipmentController::class,'readEquipment']);
+route::post('/updateEquipment/{id}',[EquipmentController::class,'updateEquipment']);
+route::delete('/deleteEquipment/{id}',[EquipmentController::class,'deleteEquipment']);
 
 });

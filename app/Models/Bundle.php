@@ -8,7 +8,7 @@ class Bundle extends Model
 {
     protected $fillable = [
         'name',
-        'start time',
+        'start_time',
         'duration',
         'description',
         'category_id',

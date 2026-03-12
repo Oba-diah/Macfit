@@ -9,7 +9,7 @@ use App\Models\Role;
 class RolePolicy
 {
 
-    public function _construct() {}
+    public function __construct() {}
 
     public function viewAny(User $user)
     {
@@ -30,7 +30,7 @@ class RolePolicy
         return $user->id === $model->id || $user->role->id === 1;
     }
 
-    public function delete(User $user)
+    public function delete(User $user , User $model)
     {
         return $user->role->id === 1;
     }

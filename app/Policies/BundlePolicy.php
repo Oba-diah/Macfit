@@ -13,7 +13,7 @@ class BundlePolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -21,7 +21,7 @@ class BundlePolicy
      */
     public function view(User $user, Bundle $bundle): bool
     {
-        return false;
+        return true;
     }
 
     /**

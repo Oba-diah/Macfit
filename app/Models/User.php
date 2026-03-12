@@ -43,21 +43,20 @@ class User extends Authenticatable
      *
      * @return array<string, string>
      */
-    protected $casts = [  
+    protected function casts(): array
+    {
+        return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            'is_active'=>'boolean',
         ];
-        public function role(){
-            return $this->belongsTo(Role::class);
-        }
-        public function abilities(){
-            return [
-                'Admin'=> $this->role===1,
-                'Secretary'=>$this->role===2,
-                'User'=>$this->role===3,
-                'staff'=>$this->role===4,
-             ];
-        }
- }
+    }
+
+    public function role(){
+        return $this->belongsTo(Role::class);
+    }
+
+    public function isAdmin(){
+        return $this->role_id === 1;
+    }
+}
 
