@@ -32,15 +32,6 @@ Route::post('/email/verify/{id}/{hash}', [VerifyEmailcontroller::class, 'resend'
 Route::post('/email/resend', [ResendEmailVerificationController::class, 'resend'])
     ->middleware('throttle:6,1');
 
-Route::post('/register', function (Request $request) {
-    $data = $request->validate([
-        'name' => 'required|string',
-        'email' => 'required|email|unique:users,email',
-    ]);
-
-    return response()->json($data);
-});
-
         // protected routes
 Route::middleware('auth:sanctum')-> group(function () 
 {

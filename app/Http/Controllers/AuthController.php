@@ -2,95 +2,133 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\OtpMail;
 use App\Models\Role;
 use App\Models\User;
-use App\Models\UserOtp;
+use App\Models\userOtp;
+use App\Notifications\verifyemailnotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Validation\ValidationException;
 
-class AuthController extends Controller
+class Authcontroller extends Controller
 {
-    public function register(Request $request)
-    {
-        $validated = $request->validate([
-            'name' => 'required|string|max:40',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:4|max:15|confirmed',
-            'user_image'=>'nullable|image|mimes:jpeg,png,jpg,gif|max',
-            'is_active'=>'nullable|boolean',
-            'role_id'=>'required|integer|exists:roles,id',
-        ]);
-        if ($request->role_id) {
-            $role_id =$request->role_id;
-        }else{
-        $role = Role::where('name','user')->first();
-        $role_id = $role->id;
-        }
-        $role = Role::where('name','user')->first();
+   public function register(Request $request)
+   {
+    // return 'here';
+      $validated= $request->validate([
+         'name' => 'required|string|max:40',
+         'email' => 'required|email|unique:users,email',
+         'password' => 'required|string|min:4|max:15',
+         'user_image' => 'nullable|image|max:255|mimes:jpeg,jpg,png',
+         'role_id' =>'required|integer|exists:roles,id',
+
+      ]);
+// return $validated;
+       $user = new User();
+      $user->name = $validated['name'];
+      $user->email = $validated['email'];
+      $user->role_id = $validated['role_id'];
+      $user->is_active = true;  // to delete later
+      $user->password = Hash::make($validated['password']);
+
+
+      $role = Role::where('name', 'User')->first();
+
+     
+
+      if ($request->hasFile('user_image')) {
+         $filename = $request->file('user_image')->store('user_images', 'public');
+       
+      } else{
+         $filename=null;
+      } 
+        $user->user_image = $filename;
+
+      try {
+         $user->save();
+         // $signedUrl = URL::temporarySignedroute(
+         //    'verification.verify',
+         //    now()->addMinutes(60),
+         //    [
+         //       'id' => $user->id,
+         //       'hash' => sha1($user->email)
+         //    ]
+         // );
+
+         // $user->notify(new verifyemailnotification($signedUrl));
+
+        //  return response()->json([
+        //     'message' => 'Verification Email sent successfully.'
+        //  ], 200);
+
+    $token = $user->createToken('auth=token')->plainTextToken;
+    return response()->json([
+      'message' => 'Registration Successful!',
+      'user' => $user,
+      'token'=>$token,
+    ],201);
+   }
         
-        $user = new User();
-        $user->name = $validated['name'];
-        $user->email = $validated['email'];
-        $user->role_id = $validated['role_id'];
-        $user->password = Hash::make($validated['password']);
+       catch (\Exception $exception) {
+         return response()->json([
+            'error' => 'Registration Failed',
+            'message' => $exception->getMessage()
+         ]);
+      }
+   }
 
-        if ($request->hasFile('user_image')) {
-            $filename =$request->file('user_image')->store('users','public');
-            }else{
-                $filename = null;
+   public function login(Request $request)
+   {
+      $validate = $request->validate([
+         'email' => 'required|email',
+         'password' => 'required|string|min:4|max:15',
+      ]);
 
-            $user->user_image =$filename; 
+      $user = User::where('email', $validate['email'])->first();
 
-        try {
-            $user->save();
-            return response()->json($user);
-        } catch (\Exception $e) {
-            return response()->json([
-                'error' => 'Registration failed',
-                'message' => $e->getMessage()
-            ], 500);
-        }
-    }
- }
-    public function login(Request $request)
-    {
-        $validated = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required|string|min:4',
-        ]);
+      if (! $user || ! Hash::check($validate['password'], $user->password)) {
+         throw ValidationException::withMessages([
+            'error' => ['Invalid Credentials'],
+         ], 401);
+      }
 
-        $user = User::where('email', $validated['email'])->first();
+      if (!$user->is_active) {
+         return response()->json([
+            'message' => 'Your account is not active. Please Verify your Email address'
+         ], 403);
+      }
 
-        if (!$user || !Hash::check($validated['password'], $user->password)) {
-            throw ValidationException::withMessages([
-                'email' => 'Invalid Credentials'
-            ], 401);
-        }
-        $token = $user->createToken("auth_token")->plainTextToken;
-            return response()->json([
-                'access_token' => $token,
-                'token_type' => 'Bearer',
-                'message' => 'Login Successfully',
-                'user' => $user,
-                'abilities' => $user->abilities(),
-            ], 200);
-    }
-    public function logout(Request $request){
-        $request->user()->currentAccessToken()->delete();
+    //    $otp = rand(100000, 999999);
+    //    $expiresAt = now()->addMinutes(5);
 
-        return response()->json([
-            'message' => 'Logout successfully'
-        ]);
-$otp = rand(100000, 999999);
-    $expiresAt = now()->addMinutes(5);
+    //    userOtp::updateOrCreate([
+    //      'user_id'=>$user->id,
+    //      'otp'=>$otp,
+    //      'expires_at'=>$expiresAt,
+    //    ]);
 
-    UserOtp::updateOrCreate([
-        'user_id'=>$user->id,
-        'otp'=>$otp,
-        'expires_at'=>$expiresAt
-    ]);
-    
-    }
+    //    Mail::to($user->email)->send(new OtpMail($otp));
+
+    //   return response()->json([
+    //      'message' => 'Please verify the OTP sent to your email',
+    //   ], 201);
+   
+   $token = $user->createToken('auth=token')->plainTextToken;
+    return response()->json([
+      'message' => 'Login Successful!',
+      'user' => $user,
+      'token'=>$token,
+    ],201);
+   }
+
+   public function logout(Request $request)
+   {
+      $request->user()->currentAccessToken()->delete();
+      return response()->json('Logout Successfull.');
+   }
+
+   
 }
-    

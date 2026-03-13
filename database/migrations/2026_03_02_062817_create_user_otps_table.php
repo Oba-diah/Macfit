@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('user_otps', function (Blueprint $table) {
-            $table->id();
-            $table->string('Otp');
-            $table->timestamps('expires_at');
-            $table->unsignedBigInteger('User_id');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-        });
+    Schema::create('user_otps', function (Blueprint $table) {
+    $table->id();
+    $table->string('otp');
+    $table->timestamp('expires_at')->nullable();
+    $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+    $table->timestamps();
+});
     }
 
     /**
