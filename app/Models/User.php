@@ -26,6 +26,10 @@ class User extends Authenticatable
         'is_active',
         'user_image',
         'role_id',
+        'phoneNumber',
+        'gymLocation',
+        'gender',
+        'dateOfBirth',
     ];
 
     /**
