@@ -12,6 +12,7 @@ use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\VerifyEmailController;
 use App\Http\Controllers\ResendEmailVerificationController;
 use App\Http\Controllers\UserOtpController;
+use App\Http\Controllers\UserController;
 
 
     // public routes
@@ -76,5 +77,7 @@ route::post('/updateEquipment/{id}',[EquipmentController::class,'updateEquipment
 route::delete('/deleteEquipment/{id}',[EquipmentController::class,'deleteEquipment']);
 
 Route::get('/userCharges', [SubscriptionController::class, 'getUserCharges']);
+
+Route::resource('users', UserController::class);
 
 });
